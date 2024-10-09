@@ -1,7 +1,6 @@
 package ru.g_shamkhal.SpringBootEducation.lab_1.MyController;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,8 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@RestController
-@RequestMapping("/lab_1")
+@RestController("lab_1")
 public class MyController {
     private List<String> arrayList = new ArrayList<>();
     private HashMap<Integer, String> hashMap = new HashMap<>();

@@ -1,8 +1,3 @@
-# Read Me First
-The following was discovered as part of building this project:
-
-* The original package name 'ru.g-shamkhal.SpringBootEducation' is invalid and this project uses 'ru.g_shamkhal.SpringBootEducation' instead.
-
 # Getting Started
 
 ### Reference Documentation
@@ -12,6 +7,7 @@ For further reference, please consider the following sections:
 * [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/3.3.4/maven-plugin)
 * [Create an OCI image](https://docs.spring.io/spring-boot/3.3.4/maven-plugin/build-image.html)
 * [Spring Web](https://docs.spring.io/spring-boot/docs/3.3.4/reference/htmlsingle/index.html#web)
+* [Validation](https://docs.spring.io/spring-boot/docs/3.3.4/reference/htmlsingle/index.html#io.validation)
 
 ### Guides
 The following guides illustrate how to use some features concretely:
@@ -19,6 +15,7 @@ The following guides illustrate how to use some features concretely:
 * [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
 * [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
 * [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
+* [Validation](https://spring.io/guides/gs/validating-form-input/)
 
 ### Maven Parent overrides
 
