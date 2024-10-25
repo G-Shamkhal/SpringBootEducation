@@ -3,16 +3,19 @@ package ru.g_shamkhal.SpringBootEducation.controller;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import ru.g_shamkhal.SpringBootEducation.exception.UnsupportedCodeException;
 import ru.g_shamkhal.SpringBootEducation.exception.ValidationFailedException;
 import ru.g_shamkhal.SpringBootEducation.model.*;
+import ru.g_shamkhal.SpringBootEducation.service.ModifyRequestService;
+import ru.g_shamkhal.SpringBootEducation.service.ModifyResponseService;
 import ru.g_shamkhal.SpringBootEducation.service.UnsupportedService;
 import ru.g_shamkhal.SpringBootEducation.service.ValidationService;
 import ru.g_shamkhal.SpringBootEducation.util.DateTimeUtil;
@@ -25,24 +28,24 @@ public class MyController {
 
     private final ValidationService validationService;
     private final UnsupportedService unsupportedCodeException;
+    private final ModifyResponseService modifyResponseService;
+    private final ModifyRequestService modifyRequestService;
 
     @Autowired
-    public MyController(ValidationService validationService, UnsupportedService unsupportedCodeException) {
+    public MyController(ValidationService validationService, UnsupportedService unsupportedCodeException,
+                            @Qualifier("ModifySystemTimeResponseService") ModifyResponseService modifyResponseService,
+                            ModifyRequestService modifyRequestService) {
         this.validationService = validationService;
         this.unsupportedCodeException = unsupportedCodeException;
+        this.modifyResponseService = modifyResponseService;
+        this.modifyRequestService = modifyRequestService;
     }
 
     @PostMapping(value = "/feedback")
-    public ResponseEntity<Response> feedback(@Valid @RequestBody Request request, BindingResult bindingResult,
-                                             @RequestHeader(value = "X-Request-Received-Time", required = false) String requestTimeHeader) {
-        log.info("request: {}", request);
+    public ResponseEntity<Response> feedback(@Valid @RequestBody Request request, BindingResult bindingResult) {
+        long requestTime = System.currentTimeMillis();
 
-        if (requestTimeHeader != null) {
-            long delay = System.currentTimeMillis() - Long.parseLong(requestTimeHeader);
-            log.info("Время между отправкой запроса и получением в Сервисе 2: {} миллисекунд", delay);
-        } else {
-            log.warn("Заголовок X-Request-Received-Time отсутствует в запросе");
-        }
+        log.info("request: {}", request);
 
         Response response = Response.builder()
                 .uid(request.getUid())
@@ -79,6 +82,11 @@ public class MyController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Request-Received-Time", String.valueOf(requestTime));
+
+        modifyResponseService.modify(response);
+        modifyRequestService.modify(request, headers);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
